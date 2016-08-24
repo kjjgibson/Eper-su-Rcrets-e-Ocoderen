@@ -62,7 +62,3 @@ ARGF.each_line do |line|
 	encoded_line = encode(line)
 	pbcopy encoded_line
 end
-
-# TODO: longer words have a higher chance to have more random chars
-# TODO: add random words
-# TODO: Capitalize words that were capitalized before encoding
