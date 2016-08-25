@@ -8,17 +8,23 @@ class EperSuRcretsEOcoderen
   def encode(text)
     encoded_words = []
 
-    text.downcase.split(' ').each do |word|
-      word.gsub!('th', 'ç')
-      word.gsub!('ing', 'ñ')
-      word.gsub!("'", "î")
-
+    text.split(' ').each do |word|
+      is_word_capitalized = false
+      first_char = word[0, 1]
+      if first_char.upcase == first_char
+        is_word_capitalized = true
+      end
+      
       punct = nil
       last_char = word[-1, 1]
       if [',', '.', '!', '?', '...'].include?(last_char)
         punct = last_char
         word = word.chomp(punct)
       end
+      
+      word.gsub!('th', 'ç')
+      word.gsub!('ing', 'ñ')
+      word.gsub!("'", "î")
 
       letters = word.split('')
       if word.length > 3
@@ -35,6 +41,11 @@ class EperSuRcretsEOcoderen
 
       if punct
         encoded_word = "#{encoded_word}#{punct}"
+      end
+      
+      encoded_word.downcase!
+      if is_word_capitalized
+        encoded_word = encoded_word.capitalize
       end
 
       encoded_words << encoded_word
