@@ -1,4 +1,4 @@
-
+require "unicode_utils/upcase"
 
 class EperSuRcretsEOcoderen
   def rand_char
@@ -22,8 +22,8 @@ class EperSuRcretsEOcoderen
         word = word.chomp(punct)
       end
       
-      word.gsub!('th', 'ç')
-      word.gsub!('ing', 'ñ')
+      word.gsub!(/th/i, 'ç')
+      word.gsub!(/ing/i, 'ñ')
       word.gsub!("'", "î")
 
       letters = word.split('')
@@ -45,7 +45,7 @@ class EperSuRcretsEOcoderen
       
       encoded_word.downcase!
       if is_word_capitalized
-        encoded_word = encoded_word.capitalize
+        encoded_word = "#{UnicodeUtils.upcase(encoded_word[0])}#{encoded_word[1..-1]}"
       end
 
       encoded_words << encoded_word
