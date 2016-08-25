@@ -1,8 +1,16 @@
 require "unicode_utils/upcase"
 
 class EperSuRcretsEOcoderen
+
   def rand_char
     %w(å é í ø ü)[rand(5)]
+  end
+
+  def initialize(seed=nil)
+    if seed != nil
+      srand(seed)
+    end
+    puts "Initializing seed to #{Random::DEFAULT.seed}"
   end
 
   def encode(text)
@@ -14,14 +22,14 @@ class EperSuRcretsEOcoderen
       if first_char.upcase == first_char
         is_word_capitalized = true
       end
-      
+
       punct = nil
       last_char = word[-1, 1]
       if [',', '.', '!', '?', '...'].include?(last_char)
         punct = last_char
         word = word.chomp(punct)
       end
-      
+
       word.gsub!(/th/i, 'ç')
       word.gsub!(/ing/i, 'ñ')
       word.gsub!("'", "î")
@@ -42,7 +50,7 @@ class EperSuRcretsEOcoderen
       if punct
         encoded_word = "#{encoded_word}#{punct}"
       end
-      
+
       encoded_word.downcase!
       if is_word_capitalized
         encoded_word = "#{UnicodeUtils.upcase(encoded_word[0])}#{encoded_word[1..-1]}"
