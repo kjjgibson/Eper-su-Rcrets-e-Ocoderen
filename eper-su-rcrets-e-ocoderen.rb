@@ -37,14 +37,10 @@ def encode(text)
 		  encoded_word = "#{encoded_word}#{punct}"
 	  end
 	  
+	  encoded_word = encoded_word.scan(/.{1,4}/).join(rand_char())
+	  
 	  encoded_words << encoded_word
 	end
-	
-	encoded_words.each do |word|
-	  if rand(4) == 0
-	    word.insert(rand(word.length), rand_char)
-    end
-  end
 	
 	encoded_text = encoded_words.join(' ')
   
