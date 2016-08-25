@@ -32,12 +32,12 @@ def encode(text)
 		else
 			encoded_word = "#{rand_char}#{word}#{rand_char}"
 		end
-		
-		if punct
-		  encoded_word = "#{encoded_word}#{punct}"
-	  end
 	  
 	  encoded_word = encoded_word.scan(/.{1,4}/).join(rand_char())
+	  
+	  if punct
+		  encoded_word = "#{encoded_word}#{punct}"
+	  end
 	  
 	  encoded_words << encoded_word
 	end
