@@ -49,3 +49,4 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'clipboard'
 gem 'ffi', :platforms => [:mswin, :mingw]
+gem 'unicode_utils'
