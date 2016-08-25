@@ -1,0 +1,14 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    clipboard (1.1.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  clipboard
+  ffi
+
+BUNDLED WITH
+   1.12.5

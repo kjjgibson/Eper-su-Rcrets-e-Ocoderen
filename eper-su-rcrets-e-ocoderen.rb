@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+require 'clipboard'
 
 def rand_char
   %w(å é í ø ü)[rand(5)]
@@ -6,21 +7,21 @@ end
 
 def encode(text)
 	encoded_words = []
-	  
+
 	text.downcase.split(' ').each do |word|
 	  word.gsub!('th', 'ç')
 	  word.gsub!('ing', 'ñ')
 	  word.gsub!("'", "î")
-	  
+
 	  punct = nil
 	  last_char = word[-1, 1]
 	  if [',', '.', '!', '?', '...'].include?(last_char)
 	    punct = last_char
 	    word = word.chomp(punct)
     end
-	  
+
 	  encoded_word = ''
-	  
+
 		letters = word.split('')
 		if word.length > 3
 			encoded_word = "#{letters[3]}#{letters[2..-1].join}#{letters[0..1].join}"
@@ -32,22 +33,22 @@ def encode(text)
 		else
 			encoded_word = "#{rand_char}#{word}#{rand_char}"
 		end
-		
+
 		if punct
 		  encoded_word = "#{encoded_word}#{punct}"
 	  end
-	  
+
 	  encoded_words << encoded_word
 	end
-	
+
 	encoded_words.each do |word|
 	  if rand(4) == 0
 	    word.insert(rand(word.length), rand_char)
     end
   end
-	
+
 	encoded_text = encoded_words.join(' ')
-  
+
 	return encoded_text
 end
 
@@ -60,5 +61,5 @@ end
 ARGF.each_line do |line|
 	system "clear"
 	encoded_line = encode(line)
-	pbcopy encoded_line
+	Clipboard.copy(encoded_line)
 end
