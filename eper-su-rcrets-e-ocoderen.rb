@@ -14,7 +14,7 @@ def encode(text)
 	  
 	  punct = nil
 	  last_char = word[-1, 1]
-	  if ['.', '!', '?', '...'].include?(last_char)
+	  if [',', '.', '!', '?', '...'].include?(last_char)
 	    punct = last_char
 	    word = word.chomp(punct)
     end
