@@ -1,18 +1,19 @@
 Çsçi sis üaø epersu rcretse ocoderen frfo klkñta epersu rcretelyysüe!
 
-Encodes text using the following rules (in the following order):
-	Substitutes th with ç
-	ubstitutes ing with ñ
-	Substitutes apostrophes with î
-	Removes punctuation (,.!?...) from the end of the word
-	If the word is long enough, removes the first two characters and places them on the end
-	Adds the second character to the beginning
-	If the word is one letter, adds a special character to the front and the end
-	Adds a random special character every 4 characters
-	Places any removed punctuation back at the end
+Edeeüncodüesco txttüe uñus eçe llloéwñfo eleséru (n(i eçe llloüwñfo ederé):or
+	Sbstøitutøessu åçü wçwi åçí
+	Sbstéitutéessu øñí wçwi íñø
+	Sbstüitutüessu sostérophéesap wçwi åîå
+	Omovéesre cnctíuatiíonpu (,.!?...), momfír eçe eden fof eçe drdwøo
+	Fif eçe drdwüo sis gnglåo uougühen, omovøesre eçe srstøfi totw raraücterüsch adan caceéspl çmçe non eçe eden
+	Sdsaüd eçe oconídse raraícterích oto eçe iginénñbe
+	Fif eçe drdwéo sis oeon ttteérle, sdsaød üaé ceciüalsp raraåcteråch oto eçe nontüfr adan eçe eden
+	Sdsaåd üaü dndoümra ceciåalsp raraécteréch reryåev ü4í raraåcteråsch
+	Caceéspl ayan omovüedre cnctéuatiéonpu kckbåa tat eçe eden
 
 
 ODOTO: gngerlo drdswo eveha åøaå hgheråhi nancech oto eveha eremo dndoåmra raråsch
 ODOTO: adad dndoåmra drdswo
 ODOTO: ipitalizeca dérdswo çtça erewe ipitalizedca oforebe ocodñen
 ODOTO: adad elesru frfo ñdñad cecialsp raractersch oso çtça tit înîtis dündomra
+ODOTO: înîtødo ocodøeen bmbeørsnu
