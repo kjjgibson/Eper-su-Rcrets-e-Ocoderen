@@ -21,10 +21,11 @@ class EperSuRcretsEOcoderen
         end
 
         punct = nil
-        last_char = word[-1, 1]
-        if [',', '.', '!', '?', '...'].include?(last_char)
-          punct = last_char
-          word = word.chomp(punct)
+        index_of_punct = word.index(/[^a-z]+$/i)
+        end_punct = nil
+        if index_of_punct
+          end_punct = word[index_of_punct..-1]
+          word = word[0...index_of_punct]
         end
 
         word.gsub!(/th/i, 'ç')
@@ -44,8 +45,8 @@ class EperSuRcretsEOcoderen
         end
         encoded_word = encoded_word.scan(/.{1,4}/).join(rand_char())
 
-        if punct
-          encoded_word = "#{encoded_word}#{punct}"
+        if end_punct
+          encoded_word = "#{encoded_word}#{end_punct}"
         end
 
         encoded_word.downcase!
