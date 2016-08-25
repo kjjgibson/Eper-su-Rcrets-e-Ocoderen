@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-require 'rbconfig'
+require 'clipboard'
 
 def rand_char
   %w(å é í ø ü)[rand(5)]
@@ -61,16 +61,5 @@ end
 ARGF.each_line do |line|
 	system "clear"
 	encoded_line = encode(line)
-	host_os = RbConfig::CONFIG['host_os']
-  case host_os
-  when /mswin|msys|mingw|cygwin|bccwin|wince|emc/
-    puts 'lol windows'
-  when /darwin|mac os/
-    pbcopy encoded_line
-  when /linux/
-    puts encoded_line
-  else
-    raise Error::WebDriverError, "What are you even using?"
-  end
-
+	Clipboard.copy(encoded_line)
 end
