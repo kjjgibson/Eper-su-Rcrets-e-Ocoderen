@@ -1,6 +1,6 @@
 class EperController < ApplicationController
   def create
-    encoded = EperSuRcretsEOcoderen.new().encode(params[:item][:message].gsub('/e ', ''))
+    encoded = EperSuRcretsEOcoderen.new().encode(params[:item][:message][:message].gsub('/e ', ''))
     response = {
         message: encoded,
         notify: true,
