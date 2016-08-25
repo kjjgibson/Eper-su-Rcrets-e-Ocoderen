@@ -5,7 +5,8 @@ class EperController < ApplicationController
     response = {
         message: encoded,
         notify: true,
-        message_format: 'text'
+        message_format: 'text',
+        from: params[:item][:message][:from][:name]
     }
     render json: response
   end
