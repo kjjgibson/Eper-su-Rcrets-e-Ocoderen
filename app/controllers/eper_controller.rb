@@ -7,6 +7,6 @@ class EperController < ApplicationController
         notify: true,
         message_format: 'text'
     }
-    render response
+    render json: response
   end
 end
