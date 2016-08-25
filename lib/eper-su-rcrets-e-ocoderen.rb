@@ -1,5 +1,4 @@
-#!/usr/bin/env ruby
-require 'clipboard'
+
 
 class EperSuRcretsEOcoderen
   def rand_char
@@ -46,8 +45,3 @@ class EperSuRcretsEOcoderen
   end
 end
 
-ARGF.each_line do |line|
-  system "clear"
-  encoded_line = encode(line)
-  Clipboard.copy(encoded_line)
-end   
