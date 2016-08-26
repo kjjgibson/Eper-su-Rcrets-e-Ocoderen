@@ -1,22 +1,38 @@
-require "unicode_utils/upcase"
+require 'unicode_utils/upcase'
+require 'faker'
 
 class EperSuRcretsEOcoderen
 
-  def rand_char
-    %w(å é í ø ü)[rand(5)]
+  @@parent_encoder = true
+  attr_accessor :seed, :fake_freq
+
+  module CharacterSets
+    RANDOM_CHARACTERS = %w(å é í ø ü)
+    FAKE_WORD_MARKERS = %w(æ œ ß)
   end
 
-  def initialize(seed=nil)
-    if seed != nil
-      srand(seed)
+  def rand_char(char_set)
+    char_set[rand(char_set.length)]
+  end
+
+  def seed=(value)
+    if value
+      srand(value)
     end
-    puts "Initializing seed to #{Random::DEFAULT.seed}"
+  end
+
+  def initialize(s, ff)
+    self.seed = s
+    self.fake_freq = ff
+    if @@parent_encoder
+      puts "Initializing seed to #{Random::DEFAULT.seed}"
+      @@parent_encoder = false
+    end
   end
 
   def encode(text)
     encoded_words = []
-
-    text.split(' ').each do |word|
+    text.split(' ').each_with_index do |word, word_index|
       encoded_word = word
 
       # If the word contains no alpha chars then don't do anything with it as it's likely to be a number or an emoji
@@ -48,9 +64,9 @@ class EperSuRcretsEOcoderen
         elsif word.length > 1
           encoded_word = "#{letters[1]}#{word}"
         else
-          encoded_word = "#{rand_char}#{word}#{rand_char}"
+          encoded_word = "#{rand_char(CharacterSets::RANDOM_CHARACTERS)}#{word}#{rand_char(CharacterSets::RANDOM_CHARACTERS)}"
         end
-        encoded_word = encoded_word.scan(/.{1,4}/).join(rand_char())
+        encoded_word = encoded_word.scan(/.{1,4}/).join(rand_char(CharacterSets::RANDOM_CHARACTERS))
 
         if end_punct
           encoded_word = "#{encoded_word}#{end_punct}"
@@ -59,6 +75,19 @@ class EperSuRcretsEOcoderen
         encoded_word.downcase!
         if is_word_capitalized
           encoded_word = "#{UnicodeUtils.upcase(encoded_word[0])}#{encoded_word[1..-1]}"
+        end
+      end
+
+      # Print a random word, every n words, but don't print it if it's first word
+      # 0 % 4 == 0 is true, we don't want this, as it would add a random word at
+      # the start of every sentence
+      if word_index % self.fake_freq == 0 && word_index != 0
+        fake_word = Faker::Space.moon
+        # This is so our recursion doesn't go bananas, we only want one level of recursion.
+        if fake_word.split.size == 1
+          encoded_fake_word = encode(fake_word)
+          encoded_marked_fake_word = encoded_fake_word.insert(rand(fake_word.length), rand_char(CharacterSets::FAKE_WORD_MARKERS))
+          encoded_words << encoded_marked_fake_word
         end
       end
 
