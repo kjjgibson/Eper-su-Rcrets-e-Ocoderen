@@ -7,7 +7,7 @@ class EperSuRcretsEOcoderen
   attr_accessor :seed, :fake_freq
 
   module CharacterSets
-    RANDOM_CHARACTERS = %w(å é í ø ü)
+    IGNORED_CHARS = %w(å é í ø ü)
     FAKE_WORD_MARKERS = %w(æ œ ß)
   end
 
@@ -64,9 +64,9 @@ class EperSuRcretsEOcoderen
         elsif word.length > 1
           encoded_word = "#{letters[1]}#{word}"
         else
-          encoded_word = "#{rand_char(CharacterSets::RANDOM_CHARACTERS)}#{word}#{rand_char(CharacterSets::RANDOM_CHARACTERS)}"
+          encoded_word = "#{rand_char(CharacterSets::IGNORED_CHARS)}#{word}#{rand_char(CharacterSets::IGNORED_CHARS)}"
         end
-        encoded_word = encoded_word.scan(/.{1,4}/).join(rand_char(CharacterSets::RANDOM_CHARACTERS))
+        encoded_word = encoded_word.scan(/.{1,4}/).join(rand_char(CharacterSets::IGNORED_CHARS))
 
         if end_punct
           encoded_word = "#{encoded_word}#{end_punct}"
