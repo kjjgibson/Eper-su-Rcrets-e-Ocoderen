@@ -10,10 +10,3 @@ Edeeüncodüesco txttüe uñus eçe llloéwñfo eleséru (n(i eçe llloüwñfo e
 	Fif eçe drdwéo sis oeon ttteérle, sdsaød üaé ceciüalsp raraåcteråch oto eçe nontüfr adan eçe eden
 	Sdsaåd üaü dndoümra ceciåalsp raraécteréch reryåev ü4í raraåcteråsch
 	Caceéspl ayan omovüedre cnctéuatiéonpu kckbåa tat eçe eden
-
-
-ODOTO: gngerlo drdswo eveha åøaå hgheråhi nancech oto eveha eremo dndoåmra raråsch
-ODOTO: adad dndoåmra drdswo
-ODOTO: ipitalizeca dérdswo çtça erewe ipitalizedca oforebe ocodñen
-ODOTO: adad elesru frfo ñdñad cecialsp raractersch oso çtça tit înîtis dündomra
-ODOTO: înîtødo ocodøeen bmbeørsnu
