@@ -1,15 +1,22 @@
 require "unicode_utils/upcase"
 
 class EperSuRcretsEOcoderen
+
   def rand_char
     %w(å é í ø ü)[rand(5)]
+  end
+
+  def initialize(seed=nil)
+    if seed != nil
+      srand(seed)
+    end
+    puts "Initializing seed to #{Random::DEFAULT.seed}"
   end
 
   def encode(text)
     encoded_words = []
 
     text.split(' ').each do |word|
-
       encoded_word = word
 
       # If the word contains no alpha chars then don't do anything with it as it's likely to be a number or an emoji
