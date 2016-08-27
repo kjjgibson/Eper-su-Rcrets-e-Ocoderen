@@ -3,7 +3,6 @@ require 'faker'
 
 class EperSuRcretsEOcoderen
 
-  @@parent_encoder = true
   attr_accessor :seed, :fake_freq
 
   module CharacterSets
@@ -24,10 +23,7 @@ class EperSuRcretsEOcoderen
   def initialize(s, ff)
     self.seed = s
     self.fake_freq = ff
-    if @@parent_encoder
       puts "Initializing seed to #{Random::DEFAULT.seed}"
-      @@parent_encoder = false
-    end
   end
 
   def encode(text)
