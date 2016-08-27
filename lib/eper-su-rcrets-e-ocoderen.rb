@@ -22,12 +22,14 @@ class EperSuRcretsEOcoderen
       # If the word contains no alpha chars then don't do anything with it as it's likely to be a number or an emoji
       if word.match(/[a-z]/i) != nil
         is_word_capitalized = false
+        is_word_acronym = false
         first_char = word[0, 1]
-        if first_char.upcase == first_char
+        if word.upcase == word && word.length > 1
+          is_word_acronym = true
+        elsif first_char.upcase == first_char
           is_word_capitalized = true
         end
 
-        punct = nil
         index_of_punct = word.index(/[^a-z]+$/i)
         end_punct = nil
         if index_of_punct
@@ -57,7 +59,9 @@ class EperSuRcretsEOcoderen
         end
 
         encoded_word.downcase!
-        if is_word_capitalized
+        if is_word_acronym
+          encoded_word = UnicodeUtils.upcase(encoded_word)
+        elsif is_word_capitalized
           encoded_word = "#{UnicodeUtils.upcase(encoded_word[0])}#{encoded_word[1..-1]}"
         end
       end
