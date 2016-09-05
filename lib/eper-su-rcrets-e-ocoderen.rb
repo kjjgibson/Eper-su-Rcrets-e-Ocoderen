@@ -3,8 +3,6 @@ require 'faker'
 
 class EperSuRcretsEOcoderen
 
-  attr_accessor :seed, :fake_freq
-
   module CharacterSets
     IGNORED_CHARS = %w(å é í ø ü)
     FAKE_WORD_MARKERS = %w(æ œ ß)
@@ -15,15 +13,16 @@ class EperSuRcretsEOcoderen
   end
 
   def seed=(value)
-    if value
-      srand(value)
-    end
+
   end
 
   def initialize(s, ff)
-    self.seed = s
-    self.fake_freq = ff
-      puts "Initializing seed to #{Random::DEFAULT.seed}"
+    @seed = s
+    if @seed
+      srand(@seed)
+    end
+    @fake_freq = ff
+    puts "Initializing seed to #{Random::DEFAULT.seed}"
   end
 
   def encode(text)
@@ -77,7 +76,7 @@ class EperSuRcretsEOcoderen
       # Print a random word, every n words, but don't print it if it's first word
       # 0 % 4 == 0 is true, we don't want this, as it would add a random word at
       # the start of every sentence
-      if word_index % self.fake_freq == 0 && word_index != 0
+      if word_index % @fake_freq == 0 && word_index != 0
         fake_word = Faker::Space.moon
         # This is so our recursion doesn't go bananas, we only want one level of recursion.
         if fake_word.split.size == 1
