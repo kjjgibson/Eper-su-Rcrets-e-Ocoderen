@@ -19,7 +19,12 @@ opts.each do |opt, arg|
     when '--debug'
       debug = true
     when '--fake'
-      fake_freq = arg.to_i
+      if arg.to_i >= 0
+        fake_freq = arg.to_i
+      else
+        puts "#{opt} must be a positive number"
+        puts "default to #{fake_freq}"
+      end
     else
       puts "#{opt} is not an accepted flag"
   end

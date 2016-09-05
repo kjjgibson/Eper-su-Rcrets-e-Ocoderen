@@ -12,8 +12,13 @@ class EperSuRcretsEOcoderen
     char_set[rand(char_set.length)]
   end
 
-  def seed=(value)
-
+  # Determine if a fake word should be added
+  # * +@fake_freq+ must be greater than 0 -  So we can skip the fake word entirely
+  # * +word_index+ mod +@fake_freq+ must be zero
+  # * +word_index+ must be greater than one so we don't inject one before the first word.
+  # +word_index+ the number of words we've seen so far
+  def use_fake_word?(word_index)
+    return @fake_freq > 0 && word_index % @fake_freq == 0 && word_index != 0
   end
 
   def initialize(s, ff)
@@ -73,19 +78,14 @@ class EperSuRcretsEOcoderen
         end
       end
 
-      # Print a random word, every n words, but don't print it if it's first word
-      # 0 % 4 == 0 is true, we don't want this, as it would add a random word at
-      # the start of every sentence
-      if word_index % @fake_freq == 0 && word_index != 0
-        fake_word = Faker::Space.moon
-        # This is so our recursion doesn't go bananas, we only want one level of recursion.
-        if fake_word.split.size == 1
-          encoded_fake_word = encode(fake_word)
-          encoded_marked_fake_word = encoded_fake_word.insert(rand(fake_word.length), rand_char(CharacterSets::FAKE_WORD_MARKERS))
-          encoded_words << encoded_marked_fake_word
-        end
+      if use_fake_word?(word_index)
+        fake_word = Faker::Space.translate('faker.space').values.flatten.sample
+        # This is so our recursion doesn't go bananas, we only want one level of recursion
+        first_fake_word = fake_word.split[0].downcase
+        encoded_fake_word = encode(first_fake_word)
+        encoded_marked_fake_word = encoded_fake_word.insert(rand(first_fake_word.length), rand_char(CharacterSets::FAKE_WORD_MARKERS))
+        encoded_words << encoded_marked_fake_word
       end
-
       encoded_words << encoded_word
     end
     encoded_text = encoded_words.join(' ')
