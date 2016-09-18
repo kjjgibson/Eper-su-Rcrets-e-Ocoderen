@@ -1,22 +1,38 @@
-require "unicode_utils/upcase"
+require 'unicode_utils/upcase'
+require 'faker'
 
 class EperSuRcretsEOcoderen
 
-  def rand_char
-    %w(å é í ø ü)[rand(5)]
+  module CharacterSets
+    IGNORED_CHARS = %w(å é í ø ü)
+    FAKE_WORD_MARKERS = %w(æ œ ß)
   end
 
-  def initialize(seed=nil)
-    if seed != nil
-      srand(seed)
+  def rand_char(char_set)
+    char_set[rand(char_set.length)]
+  end
+
+  # Determine if a fake word should be added
+  # * +@fake_freq+ must be greater than 0 -  So we can skip the fake word entirely
+  # * +word_index+ mod +@fake_freq+ must be zero
+  # * +word_index+ must be greater than one so we don't inject one before the first word.
+  # +word_index+ the number of words we've seen so far
+  def use_fake_word?(word_index)
+    return @fake_freq > 0 && word_index % @fake_freq == 0 && word_index != 0
+  end
+
+  def initialize(s, ff)
+    @seed = s
+    if @seed
+      srand(@seed)
     end
+    @fake_freq = ff
     puts "Initializing seed to #{Random::DEFAULT.seed}"
   end
 
   def encode(text)
     encoded_words = []
-
-    text.split(' ').each do |word|
+    text.split(' ').each_with_index do |word, word_index|
       encoded_word = word
 
       # If the word contains no alpha chars then don't do anything with it as it's likely to be a number or an emoji
@@ -50,9 +66,9 @@ class EperSuRcretsEOcoderen
         elsif word.length > 1
           encoded_word = "#{letters[1]}#{word}"
         else
-          encoded_word = "#{rand_char}#{word}#{rand_char}"
+          encoded_word = "#{rand_char(CharacterSets::IGNORED_CHARS)}#{word}#{rand_char(CharacterSets::IGNORED_CHARS)}"
         end
-        encoded_word = encoded_word.scan(/.{1,4}/).join(rand_char())
+        encoded_word = encoded_word.scan(/.{1,4}/).join(rand_char(CharacterSets::IGNORED_CHARS))
 
         if end_punct
           encoded_word = "#{encoded_word}#{end_punct}"
@@ -66,6 +82,14 @@ class EperSuRcretsEOcoderen
         end
       end
 
+      if use_fake_word?(word_index)
+        fake_word = Faker::Space.translate('faker.space').values.flatten.sample
+        # This is so our recursion doesn't go bananas, we only want one level of recursion
+        first_fake_word = fake_word.split[0].downcase
+        encoded_fake_word = encode(first_fake_word)
+        encoded_marked_fake_word = encoded_fake_word.insert(rand(first_fake_word.length), rand_char(CharacterSets::FAKE_WORD_MARKERS))
+        encoded_words << encoded_marked_fake_word
+      end
       encoded_words << encoded_word
     end
     encoded_text = encoded_words.join(' ')
