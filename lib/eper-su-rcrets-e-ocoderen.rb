@@ -21,6 +21,12 @@ class EperSuRcretsEOcoderen
     return @fake_freq > 0 && word_index % @fake_freq == 0 && word_index != 0
   end
 
+  def new_fake_word
+    fake_words = Faker::Space.translate('faker.space').values.flatten.sample
+    first_fake_word = fake_words.split[0].downcase
+    return first_fake_word
+  end
+
   def initialize(s, ff)
     @seed = s
     if @seed
@@ -79,9 +85,9 @@ class EperSuRcretsEOcoderen
       end
 
       if use_fake_word?(word_index)
-        fake_word = Faker::Space.translate('faker.space').values.flatten.sample
+
         # This is so our recursion doesn't go bananas, we only want one level of recursion
-        first_fake_word = fake_word.split[0].downcase
+        first_fake_word = new_fake_word()
         encoded_fake_word = encode(first_fake_word)
         encoded_marked_fake_word = encoded_fake_word.insert(rand(first_fake_word.length), rand_char(CharacterSets::FAKE_WORD_MARKERS))
         encoded_words << encoded_marked_fake_word
