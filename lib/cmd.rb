@@ -37,6 +37,9 @@ ARGF.each_line do |line|
   system 'clear'
   encoded_line = encoder.encode(line)
   if debug
+    # Ensures the state of your encoder is reset so that typing the same word
+    # will always return the same encoded word, all random elements will be the same
+    srand(seed)
     if seed != nil
       puts "Seed Value: '#{seed}'"
     end
