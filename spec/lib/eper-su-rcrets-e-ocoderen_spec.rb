@@ -8,7 +8,7 @@ describe 'encoding' do
 
     context 'a large sentence' do
       let(:phrase) { "This is a test sentence :), I'm checking that things don't regress LOL WTF BBQ" }
-      let(:outcome) { 'Çsçi sis åaé œbsbsén tsttåe tnteüncesüe :), yçysæíte Imiî ceckíñch çtça sßssiéerme çsçñ înîtådo rgreéssre tæptuénene Lllo Wfwt Bqbb' }
+      let(:outcome) { 'Çsçi sis åaé œbsbsén tsttåe tnteüncesüe :), yçysæíte Imiî ceckíñch çtça sßssiéerme çsçñ înîtådo rgreéssre tæptuénene LLLO WFWT BQBB' }
       it_behaves_like 'word encoder'
     end
 
@@ -32,6 +32,12 @@ describe 'encoding' do
           found_fake_word = fake_word_markers.any? { |char| first_injected_fake_word.include?(char) }
           expect(found_fake_word).to be_truthy
         end
+      end
+
+      context 'with an escaped phrase' do
+        let(:phrase) { 'I will be down before you can say ~mixed vegetables~' }
+        let(:outcome) { 'Øiü lllwéi ebe œbsbsén nwndåo oforüebe yuyo yçysæíte cnca sysa mixed vegetables' }
+        it_behaves_like 'word encoder'
       end
     end
 
