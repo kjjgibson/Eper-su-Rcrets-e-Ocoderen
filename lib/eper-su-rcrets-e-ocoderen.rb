@@ -43,7 +43,7 @@ class EperSuRcretsEOcoderen
     encoded_words = []
     escaped = false
     text.split(' ').each_with_index do |word, word_index|
-      encoded_word = ''
+      encoded_word = word
       # If the word contains no alpha chars then don't do anything with it as it's likely to be a number or an emoji
       if word.match(/[a-z]/i) != nil
 
@@ -55,10 +55,7 @@ class EperSuRcretsEOcoderen
           encoded_word = encode_word(word)
           # We don't want to inject a fake word in the middle of escaped text
           if use_fake_word?(word_index)
-            first_fake_word = new_fake_word()
-            encoded_fake_word = encode(first_fake_word)
-            encoded_marked_fake_word = encoded_fake_word.insert(rand(first_fake_word.length), rand_char(CharacterSets::FAKE_WORD_MARKERS))
-            encoded_words << encoded_marked_fake_word
+            encoded_words << inject_fake_word()
           end
 
         else
@@ -77,6 +74,13 @@ class EperSuRcretsEOcoderen
     encoded_text = encoded_words.join(' ')
 
     return encoded_text
+  end
+
+  def inject_fake_word
+    first_fake_word = new_fake_word()
+    encoded_fake_word = encode(first_fake_word)
+    encoded_marked_fake_word = encoded_fake_word.insert(rand(first_fake_word.length), rand_char(CharacterSets::FAKE_WORD_MARKERS))
+    return encoded_marked_fake_word
   end
 
   def encode_word(word)
