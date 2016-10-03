@@ -8,6 +8,8 @@ class EperSuRcretsEOcoderen
     FAKE_WORD_MARKERS = %w(æ œ ß)
   end
 
+  ESCAPE_BLOCK = '~'
+
   def rand_char(char_set)
     char_set[rand(char_set.length)]
   end
@@ -23,6 +25,7 @@ class EperSuRcretsEOcoderen
 
   def new_fake_word
     fake_words = Faker::Space.translate('faker.space').values.flatten.sample
+    # This is so our recursion doesn't go bananas, we only want one level of recursion
     first_fake_word = fake_words.split[0].downcase
     return first_fake_word
   end
@@ -38,68 +41,89 @@ class EperSuRcretsEOcoderen
 
   def encode(text)
     encoded_words = []
+    escaped = false
     text.split(' ').each_with_index do |word, word_index|
-      encoded_word = word
-
+      encoded_word = ''
       # If the word contains no alpha chars then don't do anything with it as it's likely to be a number or an emoji
       if word.match(/[a-z]/i) != nil
-        is_word_capitalized = false
-        is_word_acronym = false
-        first_char = word[0, 1]
-        if word.upcase == word && word.length > 1
-          is_word_acronym = true
-        elsif first_char.upcase == first_char
-          is_word_capitalized = true
+
+        if word.match(/^#{Regexp.escape ESCAPE_BLOCK}.+/i) != nil
+          escaped = true
         end
 
-        index_of_punct = word.index(/[^a-z]+$/i)
-        end_punct = nil
-        if index_of_punct
-          end_punct = word[index_of_punct..-1]
-          word = word[0...index_of_punct]
-        end
+        if !escaped
+          encoded_word = encode_word(word)
+          # We don't want to inject a fake word in the middle of escaped text
+          if use_fake_word?(word_index)
+            first_fake_word = new_fake_word()
+            encoded_fake_word = encode(first_fake_word)
+            encoded_marked_fake_word = encoded_fake_word.insert(rand(first_fake_word.length), rand_char(CharacterSets::FAKE_WORD_MARKERS))
+            encoded_words << encoded_marked_fake_word
+          end
 
-        word.gsub!(/th/i, 'ç')
-        word.gsub!(/ing/i, 'ñ')
-        word.gsub!("'", "î")
-
-        letters = word.split('')
-        if word.length > 3
-          encoded_word = "#{letters[3]}#{letters[2..-1].join}#{letters[0..1].join}"
-        elsif word.length > 2
-          temp = "#{letters[2..-1].join}#{letters[0..1].join}"
-          encoded_word = "#{temp[1]}#{temp}"
-        elsif word.length > 1
-          encoded_word = "#{letters[1]}#{word}"
         else
-          encoded_word = "#{rand_char(CharacterSets::IGNORED_CHARS)}#{word}#{rand_char(CharacterSets::IGNORED_CHARS)}"
-        end
-        encoded_word = encoded_word.scan(/.{1,4}/).join(rand_char(CharacterSets::IGNORED_CHARS))
-
-        if end_punct
-          encoded_word = "#{encoded_word}#{end_punct}"
+          encoded_word = word.gsub(/~/, '')
         end
 
-        encoded_word.downcase!
-        if is_word_acronym
-          encoded_word = UnicodeUtils.upcase(encoded_word)
-        elsif is_word_capitalized
-          encoded_word = "#{UnicodeUtils.upcase(encoded_word[0])}#{encoded_word[1..-1]}"
+        if word.match(/.+#{Regexp.escape ESCAPE_BLOCK}/i) != nil
+          escaped = false
         end
-      end
-
-      if use_fake_word?(word_index)
-
-        # This is so our recursion doesn't go bananas, we only want one level of recursion
-        first_fake_word = new_fake_word()
-        encoded_fake_word = encode(first_fake_word)
-        encoded_marked_fake_word = encoded_fake_word.insert(rand(first_fake_word.length), rand_char(CharacterSets::FAKE_WORD_MARKERS))
-        encoded_words << encoded_marked_fake_word
       end
       encoded_words << encoded_word
+    end
+    if escaped
+      puts 'Escape block was not closed!'
     end
     encoded_text = encoded_words.join(' ')
 
     return encoded_text
+  end
+
+  def encode_word(word)
+    word_to_encode = word
+    is_word_capitalized = false
+    is_word_acronym = false
+    first_char = word_to_encode[0, 1]
+    if word_to_encode.upcase == word_to_encode && word_to_encode.length > 1
+      is_word_acronym = true
+    elsif first_char.upcase == first_char
+      is_word_capitalized = true
+    end
+
+    index_of_punct = word_to_encode.index(/[^a-z]+$/i)
+    end_punct = nil
+    if index_of_punct
+      end_punct = word_to_encode[index_of_punct..-1]
+      word_to_encode = word_to_encode[0...index_of_punct]
+    end
+
+    word_to_encode.gsub!(/th/i, 'ç')
+    word_to_encode.gsub!(/ing/i, 'ñ')
+    word_to_encode.gsub!("'", "î")
+
+    letters = word_to_encode.split('')
+    if word_to_encode.length > 3
+      encoded_word = "#{letters[3]}#{letters[2..-1].join}#{letters[0..1].join}"
+    elsif word_to_encode.length > 2
+      temp = "#{letters[2..-1].join}#{letters[0..1].join}"
+      encoded_word = "#{temp[1]}#{temp}"
+    elsif word_to_encode.length > 1
+      encoded_word = "#{letters[1]}#{word_to_encode}"
+    else
+      encoded_word = "#{rand_char(CharacterSets::IGNORED_CHARS)}#{word_to_encode}#{rand_char(CharacterSets::IGNORED_CHARS)}"
+    end
+    encoded_word = encoded_word.scan(/.{1,4}/).join(rand_char(CharacterSets::IGNORED_CHARS))
+
+    if end_punct
+      encoded_word = "#{encoded_word}#{end_punct}"
+    end
+
+    encoded_word.downcase!
+    if is_word_acronym
+      encoded_word = UnicodeUtils.upcase(encoded_word)
+    elsif is_word_capitalized
+      encoded_word = "#{UnicodeUtils.upcase(encoded_word[0])}#{encoded_word[1..-1]}"
+    end
+    return encoded_word
   end
 end
